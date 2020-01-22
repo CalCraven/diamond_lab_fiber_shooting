@@ -13,13 +13,10 @@ class TisCamera(Base, EmptyInterface):
     _modclass = 'EmptyInterface'
     _modtype = 'hardware'
 
-    def __init__(self, config, **kwargs):
-        super().__init__(config=config, **kwargs)
-        self.log.info('The following configuration was found.')
-        # checking for the right configuration
-        for key in config.keys():
-            self.log.info('{0}: {1}'.format(key, config[key]))
-
+    def on_activate(self):
+        """
+        Initialisation performed during activation of the module.
+        """
         self.cam = None
         self.ret, self.frame = False, None
         self.video_height, self.video_width, self.video_channels = None, None, None
@@ -46,10 +43,6 @@ class TisCamera(Base, EmptyInterface):
         self.screenshots = None
         self.edges_mask = None
 
-    def on_activate(self):
-        """
-        Initialisation performed during activation of the module.
-        """
         self.setup_camera()
 
     def on_deactivate(self):
@@ -62,7 +55,7 @@ class TisCamera(Base, EmptyInterface):
 
     def setup_camera(self):
         """ Setup camera parameters. """
-        self.cam = cv2.VideoCapture(0)
+        self.cam = cv2.VideoCapture(1)
         self.ret, self.frame = self.cam.read()
         self.video_height, self.video_width, self.video_channels = self.frame.shape
         self.pixel_size = self.real_width / self.video_width
@@ -113,7 +106,7 @@ class TisCamera(Base, EmptyInterface):
     def stop_video(self):
         """ Stop the capture of the video. """
         if self.is_video():
-            self.set_video_status(False)
+            self.set_video(False)
             self.cam.release()
         else:
             pass
@@ -174,6 +167,7 @@ class TisCamera(Base, EmptyInterface):
     def set_cross(self, boolean):
         """ Set the cross drawn status. """
         self.cross = boolean
+        print('cross', self.cross)
 
     def set_jacket(self, boolean):
         """ Set the jacket drawn status. """
@@ -186,6 +180,8 @@ class TisCamera(Base, EmptyInterface):
     def set_core(self, boolean):
         """ Set the core drawn status. """
         self.core = boolean
+        print('core', self.core)
+
 
     def set_edge_detection(self, boolean):
         """ Set the edge detection drawn status. """

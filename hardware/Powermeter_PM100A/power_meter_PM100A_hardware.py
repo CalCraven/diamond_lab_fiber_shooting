@@ -3,7 +3,7 @@ from ThorlabsPM100.ThorlabsPM100 import ThorlabsPM100
 from core.module import Base
 from interface.empty_interface import EmptyInterface
 
-class power_meter_PM100A_hardware(Base, EmptyInterface):
+class PowerMeterPM100AHardware(Base, EmptyInterface):
     """
     This is the Interface class to define the controls for the simple
     microwave hardware.
@@ -23,9 +23,10 @@ class power_meter_PM100A_hardware(Base, EmptyInterface):
         Initialisation performed during activation of the module.
         """
         self.rm = visa.ResourceManager()
-        # print(rm.list_resources())
+        # to know the usb address of the power meter, uncomment this line and run the hardware file
+        # print(self.rm.list_resources())
         try:
-            self.inst = self.rm.open_resource('USB0::0x1313::0x8079::P1002063::INSTR')
+            self.inst = self.rm.open_resource('USB0::0x1313::0x8079::P1004028::INSTR')
             self.power_meter = ThorlabsPM100(inst=self.inst)
             print('Power meter connected')
             self.connected = True

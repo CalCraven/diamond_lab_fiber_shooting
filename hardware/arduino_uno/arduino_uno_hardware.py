@@ -17,19 +17,19 @@ class ArduinoHardware(Base, EmptyInterface):
         for key in config.keys():
             self.log.info('{0}: {1}'.format(key, config[key]))
 
-        self.port = 'COM5'
+        self.arduino = None
+        self.lasing = False
+        self.timer = None
+        self.connected = False
+        self.duty = 0.
+
+        self.port = 'COM3'
         self.baud_rate = 115200
         self.timeout = 0.2
         self.connect_arduino()
         self.F_CPU = 16e6
         self.TOP = 3199
         self.CM = 0
-
-        self.lasing = False
-        self.timer = None
-        self.arduino = None
-        self.connected = False
-        self.duty = 0.
 
     def on_activate(self):
         """ Initialisation performed during activation of the module. """

@@ -33,26 +33,6 @@ class FiberShootingGui(GUIBase):
     # declare connectors
     fiber_shooting_logic = Connector(interface='EmptyInterface')
 
-    def __init__(self):
-
-        GUIBase.__init__(self)
-        self._mw = None
-        self.laser_status = False  # Laser OFF
-        self._fiber_shooting_logic = None
-
-        self.power_data = []
-        self.time_data = []
-        self._pw = None
-        self.curve = []
-
-        self.acquisition_time = 60
-        self.beam_splitter_reflectivity = 0.839
-
-        self.time_start = 0
-
-        self.laser_status = False
-        self.setpoint = 0
-
     def show(self):
         """Make main window visible and put it above all other windows. """
         # Show the Main Confocal GUI:
@@ -67,7 +47,7 @@ class FiberShootingGui(GUIBase):
         the event argument from fysom to the methods.
         """
         # Getting an access to all connectors:
-        self._fiber_shooting_logic = self.Connector('fiber_shooting_logic')
+        self._fiber_shooting_logic = self.fiber_shooting_logic()
         self.init_main_ui()  # initialize the main GUI
 
     def init_main_ui(self):
@@ -77,6 +57,21 @@ class FiberShootingGui(GUIBase):
         Moreover it sets default values.
         """
         self._mw = MainWindow()
+
+        self.laser_status = False  # Laser OFF
+
+        self.power_data = []
+        self.time_data = []
+        self._pw = None
+        self.curve = []
+
+        self.acquisition_time = 60
+        self.beam_splitter_coef = 0.15/0.85
+
+        self.time_start = 0
+
+        self.laser_status = False
+        self.setpoint = 0
 
         # Adjust GUI Parameters
         self._mw.cross_radioButton.setChecked(self._fiber_shooting_logic.is_cross())
@@ -278,7 +273,7 @@ class FiberShootingGui(GUIBase):
         return
 
     def set_frequency(self):
-        """Set the frequency of the laser pulses"""
+        """ Set the frequency of the laser pulses """
         if self.laser_status:
             self._fiber_shooting_logic.set_frequency(self._mw.frequency_spinBox.value())
         else:
@@ -287,9 +282,10 @@ class FiberShootingGui(GUIBase):
 
     def set_setpoint(self):
         """Set the laser output power set-point"""
-        self.setpoint = self._mw.setpoint_spinBox.value() * (1 - self.beam_splitter_reflectivity) * 1e-3
+        self.setpoint = self._mw.setpoint_spinBox.value() / self.beam_splitter_coef * 1e-3
+        print(self.setpoint)
         self._fiber_shooting_logic.set_setpoint(self.setpoint)
-        self.curve[1].setValue(self.setpoint / (1 - self.beam_splitter_reflectivity))
+        self.curve[1].setValue(self.setpoint * self.beam_splitter_coef)
         if self._fiber_shooting_logic.is_pid_status():
             self._fiber_shooting_logic.set_ramp_status(True)
             self._fiber_shooting_logic.set_pid_status(False)
@@ -316,7 +312,7 @@ class FiberShootingGui(GUIBase):
 
     def get_kp(self):
         """ Get the proportional factor of the PID """
-        return self._fiber_shooting_logic.Kp
+        return self._fiber_shooting_logic.kp
 
     def set_ki(self):
         """ Set the integral factor of the PID """
@@ -325,7 +321,7 @@ class FiberShootingGui(GUIBase):
 
     def get_ki(self):
         """ Get the integral factor of the PID """
-        return self._fiber_shooting_logic.Ki
+        return self._fiber_shooting_logic.ki
 
     def set_kd(self):
         """ Set the derivative factor of the PID """
@@ -334,14 +330,14 @@ class FiberShootingGui(GUIBase):
 
     def get_kd(self):
         """ Get the derivative factor of the PID """
-        return self._fiber_shooting_logic.Kd
+        return self._fiber_shooting_logic.kd
 
     # Graph's methods
 
     def update_data(self):
         """ Get the data from the logic and update the graph on the gui """
         self.time_data.append(self._fiber_shooting_logic.time_loop[-1] - self.time_start)
-        self.power_data.append(self._fiber_shooting_logic.power / (1 - self.beam_splitter_reflectivity))
+        self.power_data.append(self._fiber_shooting_logic.power * self.beam_splitter_coef)
         self._mw.duty_cycle_doubleSpinBox.setValue(self._fiber_shooting_logic.get_duty_cycle())
         if self.time_data[-1] > int(self._mw.acquisition_time_spinBox.value()):
             # If the len of the data is over a define value

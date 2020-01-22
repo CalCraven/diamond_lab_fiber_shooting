@@ -43,11 +43,9 @@ class FiberShootingLogic(Base, EmptyInterface):
     sigPowerUpdated = QtCore.Signal()
     sigPowerDataNext = QtCore.Signal()
 
-    def __init__(self, config, **kwargs):
-        super().__init__(config=config, **kwargs)
-        self._TiS_camera_hardware = None
-        self._arduino_hardware = None
-        self._power_meter_hardware = None
+    def on_activate(self):
+        """ Initialisation performed during activation of the module. """
+
         # Flipper variable
         self.flipper_opened = False
         # Laser
@@ -74,8 +72,6 @@ class FiberShootingLogic(Base, EmptyInterface):
         # Thread
         self.threadlock = Mutex()
 
-    def on_activate(self):
-        """ Initialisation performed during activation of the module. """
         self._TiS_camera_hardware = self.TiS_camera_hardware()
         self._arduino_hardware = self.arduino_hardware()
         self._power_meter_hardware = self.power_meter_hardware()
@@ -111,7 +107,7 @@ class FiberShootingLogic(Base, EmptyInterface):
 
     def stop_video(self):
         """ Stop to capture camera frames. """
-        self._TiS_camera_hardware.set_video_status(False)
+        self._TiS_camera_hardware.set_video(False)
         return
 
     def is_cross(self):
@@ -210,7 +206,7 @@ class FiberShootingLogic(Base, EmptyInterface):
     def set_duty_cycle(self, duty_cycle):
         """ Set the duty cycle of the laser (between 0 and 1). """
         self.duty_cycle = duty_cycle
-        self._arduino_hardware.set_duty(self.duty_cycle)
+        self._arduino_hardware.set_duty_cycle(self.duty_cycle)
 
     def get_duty_cycle(self):
         """ Get the duty cycle of the laser. """
