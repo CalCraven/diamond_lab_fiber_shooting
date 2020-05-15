@@ -42,5 +42,4 @@ class PowerMeterPM100AHardware(Base, EmptyInterface):
         return
 
     def get_power(self):
-        power = self.power_meter.read
-        return power
+        return self.power_meter.read

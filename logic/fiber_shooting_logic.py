@@ -107,7 +107,6 @@ class FiberShootingLogic(Base, EmptyInterface):
 
     def stop_video(self):
         """ Stop to capture camera frames. """
-        #self._TiS_camera_hardware.set_video(False)
         self._TiS_camera_hardware.stop_video()
         return
 
