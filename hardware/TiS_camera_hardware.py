@@ -69,12 +69,16 @@ class TisCamera(Base, EmptyInterface):
                 print('Gain: ', self.cam.get(cv2.CAP_PROP_GAIN))
                 print('Exposure: ', self.cam.get(cv2.CAP_PROP_EXPOSURE))
                 print('Auto Exposure: ', self.cam.get(cv2.CAP_PROP_AUTO_EXPOSURE))
-                #print('Setting exposure to 40 ms')
-                #print('Setting brightness to 60')
-                #self.cam.set(cv2.CAP_PROP_EXPOSURE, -5)
-                #self.cam.set(cv2.CAP_PROP_BRIGHTNESS, 60)
-                #print('Exposure: ', self.cam.get(cv2.CAP_PROP_EXPOSURE))
-                #print('Brightness: ', self.cam.get(cv2.CAP_PROP_BRIGHTNESS))
+                # print('Setting brightness to 60')
+                # self.cam.set(cv2.CAP_PROP_BRIGHTNESS, 60)
+                # print('Brightness: ', self.cam.get(cv2.CAP_PROP_BRIGHTNESS))
+                # print('Setting gain to 380')
+                # self.cam.set(cv2.CAP_PROP_GAIN, 380.0)
+                # print('Auto Exposure: ', self.cam.get(cv2.CAP_PROP_AUTO_EXPOSURE))
+                # print('Gain: ', self.cam.get(cv2.CAP_PROP_GAIN))
+                print('Setting exposure to 80 ms')
+                self.cam.set(cv2.CAP_PROP_EXPOSURE, -4)
+                print('Exposure: ', self.cam.get(cv2.CAP_PROP_EXPOSURE))
                 print('Frame size: ', np.shape(np.asarray(self.frame)))
                 return True
             else:
@@ -82,6 +86,8 @@ class TisCamera(Base, EmptyInterface):
                 return False
         else:
             print('Cannot start video capturing with this camera')
+            self.cam.release()
+            self.cam = None
             return False
 
     def start_video_thread(self):
@@ -132,7 +138,7 @@ class TisCamera(Base, EmptyInterface):
             self.get_cladding()
             self.get_jacket()
             cv2.imshow('Camera0', self.frame)
-            #cv2.waitKey(1)
+            #cv2.waitKey(50)
         else:
             print("Can't receive frame from the camera")
 

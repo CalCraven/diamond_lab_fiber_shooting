@@ -67,7 +67,7 @@ class FiberShootingGui(GUIBase):
         self.curve = []
 
         self.acquisition_time = 60
-        self.beam_splitter_coef = 29.5/93.0 # 0.15/0.85
+        self.beam_splitter_coef = 26.26/93.0
 
         self.time_start = 0
 

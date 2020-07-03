@@ -1,0 +1,118 @@
+2020-07-02 14:11:55 info __main__ Loading Qudi...
+2020-07-02 14:11:57 debug core.manager Main thread is <sip.voidptr object at 0x000001B0B56BBFD0>
+2020-07-02 14:11:58 info core.manager load.cfg config file found at C:\Users\qpitlab\Desktop\diamond_lab_fiber_shooting\config\load.cfg
+2020-07-02 14:11:58 info core.manager Starting Manager configuration from C:\Users\qpitlab\Desktop\diamond_lab_fiber_shooting\config\config_file_fiber_shooting.cfg
+2020-07-02 14:11:58 info core.manager Manager configuration complete.
+2020-07-02 14:11:58 info core.manager Qudi started.
+2020-07-02 14:11:58 info core.manager Loading module ".gui.manager.managergui"
+2020-07-02 14:11:58 info core.manager Configuring ManagerGui as man
+2020-07-02 14:11:58 debug gui.manager.managergui.ManagerGui Activation in thread <sip.voidptr object at 0x000001B0B72B0BC0>
+2020-07-02 14:12:00 debug gui.manager.managergui.ManagerGui IPy activation in thread <sip.voidptr object at 0x000001B0B6B29D00>
+2020-07-02 14:12:00 info gui.manager.managergui.ManagerGui IPython has kernel True
+2020-07-02 14:12:00 info gui.manager.managergui.ManagerGui IPython kernel alive True
+2020-07-02 14:12:00 debug core.manager Activation success: True
+2020-07-02 14:12:00 info core.manager Loading module ".gui.trayicon"
+2020-07-02 14:12:00 info core.manager Configuring TrayIcon as tray
+2020-07-02 14:12:00 debug gui.trayicon.TrayIcon Activation in thread <sip.voidptr object at 0x000001B0B969EEE0>
+2020-07-02 14:12:00 debug core.manager Activation success: True
+2020-07-02 14:12:01 info core.manager Loading module ".logic.taskrunner"
+2020-07-02 14:12:01 info core.manager Configuring TaskRunner as tasklogic
+2020-07-02 14:12:01 debug core.threadmanager Creating thread: "mod-logic-tasklogic".
+2020-07-02 14:12:01 debug logic.taskrunner.TaskRunner Activation in thread <sip.voidptr object at 0x000001B0BA9D1918>
+2020-07-02 14:12:01 info core.manager Task runner registered.
+2020-07-02 14:12:01 debug core.manager Activation success: True
+2020-07-02 14:12:04 info core.manager Loading module ".hardware.Powermeter_PM100A.power_meter_PM100A_hardware"
+2020-07-02 14:12:04 info core.manager Configuring PowerMeterPM100AHardware as power_meter_hardware
+2020-07-02 14:12:04 info hardware.Powermeter_PM100A.power_meter_PM100A_hardware.PowerMeterPM100AHardware The following configuration was found.
+2020-07-02 14:12:04 info hardware.Powermeter_PM100A.power_meter_PM100A_hardware.PowerMeterPM100AHardware module.Class: Powermeter_PM100A.power_meter_PM100A_hardware.PowerMeterPM100AHardware
+2020-07-02 14:12:04 debug hardware.Powermeter_PM100A.power_meter_PM100A_hardware.PowerMeterPM100AHardware Activation in thread <sip.voidptr object at 0x000001B0BA9D1AF8>
+2020-07-02 14:12:04 debug core.manager Activation success: True
+2020-07-02 14:12:04 info core.manager Loading module ".hardware.TiS_camera_hardware"
+2020-07-02 14:12:05 info core.manager Configuring TisCamera as TiS_camera_hardware
+2020-07-02 14:12:05 debug hardware.TiS_camera_hardware.TisCamera Activation in thread <sip.voidptr object at 0x000001B0BAC57D50>
+2020-07-02 14:12:05 debug core.manager Activation success: True
+2020-07-02 14:12:05 info core.manager Loading module ".hardware.arduino_uno.Arduino_hardware.arduino_uno_hardware"
+2020-07-02 14:12:05 info core.manager Configuring ArduinoHardware as arduino_hardware
+2020-07-02 14:12:05 debug hardware.arduino_uno.Arduino_hardware.arduino_uno_hardware.ArduinoHardware Activation in thread <sip.voidptr object at 0x000001B0BB468AF8>
+2020-07-02 14:12:05 debug core.manager Activation success: True
+2020-07-02 14:12:05 info core.manager Loading module ".logic.fiber_shooting_logic"
+2020-07-02 14:12:05 info core.manager Configuring FiberShootingLogic as fiber_shooting_logic
+2020-07-02 14:12:05 info core.manager Connecting logic.fiber_shooting_logic.TiS_camera_hardware to hardware.TiS_camera_hardware
+2020-07-02 14:12:05 info core.manager Connecting logic.fiber_shooting_logic.arduino_hardware to hardware.arduino_hardware
+2020-07-02 14:12:05 info core.manager Connecting logic.fiber_shooting_logic.power_meter_hardware to hardware.power_meter_hardware
+2020-07-02 14:12:05 debug logic.fiber_shooting_logic.FiberShootingLogic Activation in thread <sip.voidptr object at 0x000001B0BB468C88>
+2020-07-02 14:12:05 debug core.manager Activation success: True
+2020-07-02 14:12:05 info core.manager Loading module ".gui.fiber_shooting.fiber_shooting_gui"
+2020-07-02 14:12:05 info core.manager Configuring FiberShootingGui as fiber_shooting_GUI
+2020-07-02 14:12:05 info core.manager Connecting gui.fiber_shooting_GUI.fiber_shooting_logic to logic.fiber_shooting_logic
+2020-07-02 14:12:05 debug gui.fiber_shooting.fiber_shooting_gui.FiberShootingGui Activation in thread <sip.voidptr object at 0x000001B0BB494170>
+2020-07-02 14:12:05 debug core.manager Activation success: True
+2020-07-02 14:12:12 warning py.warnings C:\ProgramData\Anaconda3\envs\qudi\lib\site-packages\pyvisa\resources\messagebased.py:568: FutureWarning: ask is deprecated and will be removed in 1.10, use query instead.
+  '1.10, use query instead.', FutureWarning)
+
+2020-07-02 17:52:21 error root 
+Traceback (most recent call last):
+  File "C:\Users\qpitlab\Desktop\diamond_lab_fiber_shooting\logic\fiber_shooting_logic.py", line 268, in set_power
+    self.power = self.get_power()
+  File "C:\Users\qpitlab\Desktop\diamond_lab_fiber_shooting\logic\fiber_shooting_logic.py", line 316, in get_power
+    return self._power_meter_hardware.power_meter.read
+  File "C:\ProgramData\Anaconda3\envs\qudi\lib\site-packages\thorlabspm100-1.1.2-py3.6.egg\ThorlabsPM100\VISA_wrapper_metaclass.py", line 202, in get_val
+    value = self._ask('%s' % ' '.join(cmd_nameb))
+  File "C:\ProgramData\Anaconda3\envs\qudi\lib\site-packages\thorlabspm100-1.1.2-py3.6.egg\ThorlabsPM100\ThorlabsPM100.py", line 23, in _ask
+    out = self._inst.ask(cmd)
+  File "C:\ProgramData\Anaconda3\envs\qudi\lib\site-packages\pyvisa\resources\messagebased.py", line 569, in ask
+    return self.query(message, delay)
+  File "C:\ProgramData\Anaconda3\envs\qudi\lib\site-packages\pyvisa\resources\messagebased.py", line 564, in query
+    return self.read()
+  File "C:\ProgramData\Anaconda3\envs\qudi\lib\site-packages\pyvisa\resources\messagebased.py", line 413, in read
+    message = self._read_raw().decode(enco)
+  File "C:\ProgramData\Anaconda3\envs\qudi\lib\site-packages\pyvisa\resources\messagebased.py", line 386, in _read_raw
+    chunk, status = self.visalib.read(self.session, size)
+  File "C:\ProgramData\Anaconda3\envs\qudi\lib\site-packages\pyvisa\ctwrapper\functions.py", line 1584, in read
+    ret = library.viRead(session, buffer, count, byref(return_count))
+  File "C:\ProgramData\Anaconda3\envs\qudi\lib\site-packages\pyvisa\ctwrapper\highlevel.py", line 188, in _return_handler
+    raise errors.VisaIOError(ret_value)
+pyvisa.errors.VisaIOError: VI_ERROR_TMO (-1073807339): Timeout expired before operation completed.
+2020-07-03 10:07:46 debug core.manager Deactivating ['power_meter_hardware', 'TiS_camera_hardware', 'arduino_hardware', 'fiber_shooting_logic', 'fiber_shooting_GUI', 'man', 'tray', 'tasklogic']
+2020-07-03 10:07:46 info core.manager Deactivating module logic.tasklogic
+2020-07-03 10:07:46 info core.manager Deactivating logic.tasklogic
+2020-07-03 10:07:46 debug logic.taskrunner.TaskRunner Deactivation in thread <sip.voidptr object at 0x000001B0BB468DC8>
+2020-07-03 10:07:46 info core.manager Task runner removed.
+2020-07-03 10:07:46 debug core.threadmanager Quitting thread mod-logic-tasklogic.
+2020-07-03 10:07:46 debug core.threadmanager Waiting for thread mod-logic-tasklogic to end.
+2020-07-03 10:07:46 debug core.manager Deactivation success: True
+2020-07-03 10:07:46 debug core.threadmanager Thread mod-logic-tasklogic has quit.
+2020-07-03 10:07:46 debug core.threadmanager Cleaning up thread mod-logic-tasklogic.
+2020-07-03 10:07:46 info core.manager Deactivating module gui.tray
+2020-07-03 10:07:46 info core.manager Deactivating gui.tray
+2020-07-03 10:07:46 debug gui.trayicon.TrayIcon Deactivation in thread <sip.voidptr object at 0x000001B0BB468EE0>
+2020-07-03 10:07:46 debug core.manager Deactivation success: True
+2020-07-03 10:07:46 info core.manager Deactivating module gui.man
+2020-07-03 10:07:46 info core.manager Deactivating gui.man
+2020-07-03 10:07:46 debug gui.manager.managergui.ManagerGui Deactivation in thread <sip.voidptr object at 0x000001B0BB468EE0>
+2020-07-03 10:07:46 debug gui.manager.managergui.ManagerGui IPy deactivation: <sip.voidptr object at 0x000001B0BB468DC8>
+2020-07-03 10:07:46 debug core.manager Deactivation success: True
+2020-07-03 10:07:46 info core.manager Deactivating module gui.fiber_shooting_GUI
+2020-07-03 10:07:46 info core.manager Deactivating gui.fiber_shooting_GUI
+2020-07-03 10:07:46 debug gui.fiber_shooting.fiber_shooting_gui.FiberShootingGui Deactivation in thread <sip.voidptr object at 0x000001B0BB468E40>
+2020-07-03 10:07:46 debug core.manager Deactivation success: True
+2020-07-03 10:07:46 info core.manager Deactivating module logic.fiber_shooting_logic
+2020-07-03 10:07:46 info core.manager Deactivating logic.fiber_shooting_logic
+2020-07-03 10:07:46 debug logic.fiber_shooting_logic.FiberShootingLogic Deactivation in thread <sip.voidptr object at 0x000001B0BB468E40>
+2020-07-03 10:07:46 debug core.manager Deactivation success: True
+2020-07-03 10:07:46 info core.manager Deactivating module hardware.arduino_hardware
+2020-07-03 10:07:46 info core.manager Deactivating hardware.arduino_hardware
+2020-07-03 10:07:46 debug hardware.arduino_uno.Arduino_hardware.arduino_uno_hardware.ArduinoHardware Deactivation in thread <sip.voidptr object at 0x000001B0BB468E40>
+2020-07-03 10:07:46 debug core.manager Deactivation success: True
+2020-07-03 10:07:46 info core.manager Deactivating module hardware.TiS_camera_hardware
+2020-07-03 10:07:46 info core.manager Deactivating hardware.TiS_camera_hardware
+2020-07-03 10:07:46 debug hardware.TiS_camera_hardware.TisCamera Deactivation in thread <sip.voidptr object at 0x000001B0BB468E40>
+2020-07-03 10:07:46 debug core.manager Deactivation success: True
+2020-07-03 10:07:46 info core.manager Deactivating module hardware.power_meter_hardware
+2020-07-03 10:07:46 info core.manager Deactivating hardware.power_meter_hardware
+2020-07-03 10:07:46 debug hardware.Powermeter_PM100A.power_meter_PM100A_hardware.PowerMeterPM100AHardware Deactivation in thread <sip.voidptr object at 0x000001B0BB468E40>
+2020-07-03 10:07:46 debug core.manager Deactivation success: True
+2020-07-03 10:07:47 info __main__ Closing windows...
+2020-07-03 10:07:47 info __main__ Stopping threads...
+2020-07-03 10:07:47 debug core.threadmanager Quit all threads.
+2020-07-03 10:07:47 info __main__ Qudi is closed!  Ciao.

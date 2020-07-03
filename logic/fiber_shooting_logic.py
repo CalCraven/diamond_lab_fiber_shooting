@@ -56,7 +56,7 @@ class FiberShootingLogic(Base, EmptyInterface):
         self.ramp_status = False
         self.setpoint = 0.
         self.polarity = 1
-        self.kp, self.ki, self.kd = 2, 1, 0.3
+        self.kp, self.ki, self.kd = 0.3, 0.5, 0.3
         self.min_pid_out, self.max_pid_out = 0., 0.4
         self.ramping_factor = 0.01
         self.offset = 0
