@@ -60,6 +60,7 @@ class FiberShootingGui(GUIBase):
         self._mw = MainWindow()
 
         self.laser_status = False  # Laser OFF
+        self.setpoint = 0
 
         self.power_data = []
         self.time_data = []
@@ -70,9 +71,6 @@ class FiberShootingGui(GUIBase):
         self.beam_splitter_coef = 26.26/93.0
 
         self.time_start = 0
-
-        self.laser_status = False
-        self.setpoint = 0
 
         # Adjust GUI Parameters
         self._mw.cross_radioButton.setChecked(self._fiber_shooting_logic.is_cross())
@@ -239,12 +237,14 @@ class FiberShootingGui(GUIBase):
         if self._mw.laser_ON_checkBox.isChecked():
             self.time_start = time.time()
             self._fiber_shooting_logic.set_duty_cycle(self._mw.duty_cycle_doubleSpinBox.value())
+            self._fiber_shooting_logic.set_laser_status(True) # Start reading data from PowerMeter
             self.power_data = []
             self.time_data = []
             self._fiber_shooting_logic.set_power()
             self.laser_status = True
         else:
             self._fiber_shooting_logic.set_duty_cycle(0)
+            self._fiber_shooting_logic.set_laser_status(False) # Stop reading data from PowerMeter
             self.laser_status = False
         return
 

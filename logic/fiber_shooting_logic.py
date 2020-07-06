@@ -51,6 +51,7 @@ class FiberShootingLogic(Base, EmptyInterface):
         # Laser
         self.duty_cycle = 0
         self.frequency = 5000
+        self.laser_on = False
         # PID
         self.pid_status = False
         self.ramp_status = False
@@ -61,6 +62,7 @@ class FiberShootingLogic(Base, EmptyInterface):
         self.ramping_factor = 0.01
         self.offset = 0
         self.error_p_prev = 0.
+        self.duty_cycle_prev = 0.
         self.error_p = 0
         self.error_i = 0
         self.error_d = 0
@@ -82,7 +84,6 @@ class FiberShootingLogic(Base, EmptyInterface):
     def on_deactivate(self):
         """  Performed during deactivation of the module. """
         self._TiS_camera_hardware.on_deactivate()
-        self._power_meter_hardware.on_deactivate()
         self.set_duty_cycle(0)
         self._arduino_hardware.on_deactivate()
         self.sigPowerDataNext.disconnect()
@@ -199,6 +200,10 @@ class FiberShootingLogic(Base, EmptyInterface):
 
     # CO2 Laser
 
+    def set_laser_status(self, status):
+        """ Set laser status to know whether we need to update the power-meter readings """
+        self.laser_on = status
+
     def set_duty_cycle(self, duty_cycle):
         """ Set the duty cycle of the laser (between 0 and 1). """
         self.duty_cycle = duty_cycle
@@ -264,7 +269,11 @@ class FiberShootingLogic(Base, EmptyInterface):
 
     def set_power(self):
         """Set the duty cycle with or without PID"""
-        # measure power an the time
+        if not self.laser_on:
+            # Switch console from remote to local mode and exit
+            self._power_meter_hardware.power_meter._inst.control_ren(6)
+            return
+        # measure power and the time
         self.power = self.get_power()
         self.time_loop.append(time.time())
         # We delete the useless data in order to not saturate the memory
@@ -302,7 +311,9 @@ class FiberShootingLogic(Base, EmptyInterface):
                         self.output = self.min_pid_out
                     else:
                         self.output = correction
-                    self.set_duty_cycle(self.output)
+                    if abs(self.output - self.duty_cycle_prev) > 1e-4:
+                        self.set_duty_cycle(self.output)
+                    self.duty_cycle_prev = self.output
                     self.error_p_prev = self.error_p
                 else:
                     self.set_duty_cycle(self.duty_cycle)

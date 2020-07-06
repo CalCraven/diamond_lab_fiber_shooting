@@ -32,13 +32,17 @@ class PowerMeterPM100AHardware(Base, EmptyInterface):
             print('Power meter connected')
             self.connected = True
         except visa.VisaIOError:
-            print('Failed to connect to powermeter. Check if it is ON, or if its usb address is the good one.')
+            print('Failed to connect to powermeter. Check if it is ON, or if its usb address is correct.')
             self.connected = False
         return
 
     def on_deactivate(self):
         """ Deinitialisation performed during deactivation of the module.
         """
+        # Switch console from remote to local mode
+        self.power_meter._inst.control_ren(6)
+        # Release ResourceManager
+        self.rm.close()
         return
 
     def get_power(self):
