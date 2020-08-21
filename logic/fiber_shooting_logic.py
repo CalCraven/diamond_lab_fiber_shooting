@@ -52,6 +52,8 @@ class FiberShootingLogic(Base, EmptyInterface):
         self.duty_cycle = 0
         self.frequency = 5000
         self.laser_on = False
+        # PowerMeter
+        self.pm_connected = False
         # PID
         self.pid_status = False
         self.ramp_status = False
@@ -77,6 +79,8 @@ class FiberShootingLogic(Base, EmptyInterface):
         self._TiS_camera_hardware = self.TiS_camera_hardware()
         self._arduino_hardware = self.arduino_hardware()
         self._power_meter_hardware = self.power_meter_hardware()
+        if self._power_meter_hardware.connected:
+            self.pm_connected = True
 
         self.sigPowerDataNext.connect(self.set_power, QtCore.Qt.QueuedConnection)
         return
@@ -86,6 +90,7 @@ class FiberShootingLogic(Base, EmptyInterface):
         self._TiS_camera_hardware.on_deactivate()
         self.set_duty_cycle(0)
         self._arduino_hardware.on_deactivate()
+        self._power_meter_hardware.on_deactivate()
         self.sigPowerDataNext.disconnect()
         return
 
@@ -270,8 +275,6 @@ class FiberShootingLogic(Base, EmptyInterface):
     def set_power(self):
         """Set the duty cycle with or without PID"""
         if not self.laser_on:
-            # Switch console from remote to local mode and exit
-            self._power_meter_hardware.power_meter._inst.control_ren(6)
             return
         # measure power and the time
         self.power = self.get_power()
@@ -324,4 +327,4 @@ class FiberShootingLogic(Base, EmptyInterface):
 
     def get_power(self):
         """ Get the optical power measured by the power meter. """
-        return self._power_meter_hardware.power_meter.read
+        return self._power_meter_hardware.get_power()

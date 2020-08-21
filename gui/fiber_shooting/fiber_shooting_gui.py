@@ -68,8 +68,6 @@ class FiberShootingGui(GUIBase):
         self.curve = []
 
         self.acquisition_time = 60
-        self.beam_splitter_coef = 26.26/93.0
-
         self.time_start = 0
 
         # Adjust GUI Parameters
@@ -87,6 +85,9 @@ class FiberShootingGui(GUIBase):
         self._mw.flipper_open_checkBox.setChecked(False)
         self._mw.shutter_open_checkBox.setChecked(False)
         self._mw.laser_ON_checkBox.setChecked(False)
+        # Do not allow to turn on the laser, if PowerMeter was not found:
+        if not self._fiber_shooting_logic.pm_connected:
+            self._mw.laser_ON_checkBox.setEnabled(False)
 
         self._mw.Kp_doubleSpinBox.setValue(self.get_kp())
         self._mw.Ki_doubleSpinBox.setValue(self.get_ki())
@@ -266,10 +267,9 @@ class FiberShootingGui(GUIBase):
 
     def set_setpoint(self):
         """Set the laser output power set-point"""
-        self.setpoint = self._mw.setpoint_spinBox.value() / self.beam_splitter_coef * 1e-3
-        print(self.setpoint)
+        self.setpoint = self._mw.setpoint_spinBox.value() * 1e-3
         self._fiber_shooting_logic.set_setpoint(self.setpoint)
-        self.curve[1].setValue(self.setpoint * self.beam_splitter_coef)
+        self.curve[1].setValue(self.setpoint)
         if self._fiber_shooting_logic.is_pid_status():
             self._fiber_shooting_logic.set_ramp_status(True)
             self._fiber_shooting_logic.set_pid_status(False)
@@ -321,7 +321,7 @@ class FiberShootingGui(GUIBase):
     def update_data(self):
         """ Get the data from the logic and update the graph on the gui """
         self.time_data.append(self._fiber_shooting_logic.time_loop[-1] - self.time_start)
-        self.power_data.append(self._fiber_shooting_logic.power * self.beam_splitter_coef)
+        self.power_data.append(self._fiber_shooting_logic.power)
         self._mw.duty_cycle_doubleSpinBox.setValue(self._fiber_shooting_logic.get_duty_cycle())
         if self.time_data[-1] > int(self._mw.acquisition_time_spinBox.value()):
             # If the len of the data is over a define value

@@ -138,7 +138,7 @@ class TisCamera(Base, EmptyInterface):
             self.get_cladding()
             self.get_jacket()
             cv2.imshow('Camera0', self.frame)
-            #cv2.waitKey(50)
+            cv2.waitKey(1)
         else:
             print("Can't receive frame from the camera")
 
