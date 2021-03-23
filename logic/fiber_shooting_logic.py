@@ -201,6 +201,16 @@ class FiberShootingLogic(Base, EmptyInterface):
         """
         return self._TiS_camera_hardware.exposure_down()
 
+    def core_up(self):
+        """Increase the radius of the fiber core marker
+        @return: New fiber core size in px"""
+        return self._TiS_camera_hardware.core_up()
+
+    def core_down(self):
+        """Decrease the radius of the fiber core marker
+        @return: New fiber core size in px"""
+        return self._TiS_camera_hardware.core_down()
+
     # Flipper
 
     def open_flipper(self):

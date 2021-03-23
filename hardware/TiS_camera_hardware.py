@@ -240,16 +240,35 @@ class TisCamera(Base, EmptyInterface):
         """ Get the edges maximum threshold. """
         return int(self.edge_max * 100 / 255)
 
+    # Hot-key handlers
+
     def exposure_up(self):
         """Increase exposure of the camera
         @return: New exposure value"""
-        exposure = self.cam.get(cv2.CAP_PROP_EXPOSURE) + 1
-        self.cam.set(cv2.CAP_PROP_EXPOSURE, exposure)
-        return exposure
+        if self.cam != None:
+            exposure = self.cam.get(cv2.CAP_PROP_EXPOSURE) + 1
+            self.cam.set(cv2.CAP_PROP_EXPOSURE, exposure)
+            return exposure
 
     def exposure_down(self):
         """Decrease exposure of the camera
         @return: New exposure value"""
-        exposure = self.cam.get(cv2.CAP_PROP_EXPOSURE) - 1
-        self.cam.set(cv2.CAP_PROP_EXPOSURE, exposure)
-        return exposure
+        if self.cam != None:
+            exposure = self.cam.get(cv2.CAP_PROP_EXPOSURE) - 1
+            self.cam.set(cv2.CAP_PROP_EXPOSURE, exposure)
+            return exposure
+
+    def core_up(self):
+        """Increase the radius of the fiber core marker
+        @return: New fiber core size in px"""
+        if self.cam != None:
+            self.core_circle_radius += 1
+            return self.core_circle_radius
+
+    def core_down(self):
+        """Decrease the radius of the fiber core marker
+        @return: New fiber core size in px"""
+        if self.cam != None:
+            self.core_circle_radius -= 1
+            return self.core_circle_radius
+

@@ -162,11 +162,17 @@ class FiberShootingGui(GUIBase):
         """ Handles the passed keyboard events from the main window. """
         modifiers = QtWidgets.QApplication.keyboardModifiers()  # Check modifier keys
 
-        if modifiers == QtCore.Qt.ControlModifier:
-            if event.key() == QtCore.Qt.Key_U:  # Ctrl+U
+        #if modifiers == QtCore.Qt.ControlModifier:
+        if modifiers == QtCore.Qt.NoModifier:
+            if event.key() == QtCore.Qt.Key_U:    # Ctrl+U
                 print('Increasing exposure to', self._fiber_shooting_logic.exposure_up())
             elif event.key() == QtCore.Qt.Key_D:  # Ctrl+D
                 print('Decreasing exposure to', self._fiber_shooting_logic.exposure_down())
+            elif event.key() == QtCore.Qt.Key_P:  # P key
+                print('Increasing fiber core radius to', self._fiber_shooting_logic.core_up())
+            elif event.key() == QtCore.Qt.Key_M:  # M key
+                print('Decreasing fiber core radius to', self._fiber_shooting_logic.core_down())
+
 
     # Camera's methods
 
