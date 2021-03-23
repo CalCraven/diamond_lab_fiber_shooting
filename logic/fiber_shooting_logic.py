@@ -14,7 +14,7 @@ You should have received a copy of the GNU General Public License
 along with Qudi. If not, see <http://www.gnu.org/licenses/>.
 
 Copyright (c) the Qudi Developers. See the COPYRIGHT.txt file at the
-top-level directory of this distribution and at <https://github.com/Ulm-IQO/qudi/>
+top-level directory of this 12 and at <https://github.com/Ulm-IQO/qudi/>
 """
 
 import time
@@ -49,6 +49,7 @@ class FiberShootingLogic(Base, EmptyInterface):
         # Flipper variable
         self.flipper_opened = False
         # Laser
+        self.max_safe_duty_cycle = 0.5 # Maximum allowed duty cycle (safety lock!)
         self.duty_cycle = 0
         self.frequency = 5000
         self.laser_on = False
@@ -59,8 +60,8 @@ class FiberShootingLogic(Base, EmptyInterface):
         self.ramp_status = False
         self.setpoint = 0.
         self.polarity = 1
-        self.kp, self.ki, self.kd = 0.3, 0.5, 0.3
-        self.min_pid_out, self.max_pid_out = 0., 0.4
+        self.kp, self.ki, self.kd = 0.1, 0.5, 0.3
+        self.min_pid_out, self.max_pid_out = 0., 1.0
         self.ramping_factor = 0.01
         self.offset = 0
         self.error_p_prev = 0.
@@ -184,6 +185,22 @@ class FiberShootingLogic(Base, EmptyInterface):
         """ Get the edge detection maximum threshold on the camera video. """
         return self._TiS_camera_hardware.get_edge_max()
 
+    def make_screenshot(self):
+        """Make a screenshot and save it to a file"""
+        return self._TiS_camera_hardware.take_screenshot()
+
+    def exposure_up(self):
+        """Increase exposure of the camera
+        @return: New exposure value
+        """
+        return self._TiS_camera_hardware.exposure_up()
+
+    def exposure_down(self):
+        """Decrease exposure of the camera
+        @return: New exposure value
+        """
+        return self._TiS_camera_hardware.exposure_down()
+
     # Flipper
 
     def open_flipper(self):
@@ -212,7 +229,12 @@ class FiberShootingLogic(Base, EmptyInterface):
     def set_duty_cycle(self, duty_cycle):
         """ Set the duty cycle of the laser (between 0 and 1). """
         self.duty_cycle = duty_cycle
-        self._arduino_hardware.set_duty_cycle(self.duty_cycle)
+        # Safety feature: if someone blocks the photodetector,
+        # do not increase the power above maximum safe value
+        if self.duty_cycle > self.max_safe_duty_cycle:
+            self._arduino_hardware.set_duty_cycle(self.max_safe_duty_cycle)
+        else:
+            self._arduino_hardware.set_duty_cycle(self.duty_cycle)
 
     def get_duty_cycle(self):
         """ Get the duty cycle of the laser. """
@@ -277,7 +299,8 @@ class FiberShootingLogic(Base, EmptyInterface):
         if not self.laser_on:
             return
         # measure power and the time
-        self.power = self.get_power()
+        #self.power = self.get_power()
+        self.power = self._power_meter_hardware.get_power()
         self.time_loop.append(time.time())
         # We delete the useless data in order to not saturate the memory
         if len(self.time_loop) > 2:
@@ -289,16 +312,7 @@ class FiberShootingLogic(Base, EmptyInterface):
                 # We update the power on the GUI
                 self.sigPowerUpdated.emit()
                 self.error = self.get_setpoint() - self.power
-                if self.ramp_status:
-                    if abs(self.error) > 1e-3:
-                        self.offset = self.output
-                        self.output += np.sign(self.error)*1e-4
-                        self.set_duty_cycle(self.output)
-                    else:
-                        self.ramp_status = False
-                        self.clear_integral()
-                        self.pid_status = True
-                elif self.pid_status:
+                if self.pid_status:
                     delta_t = self.time_loop[-1] - self.time_loop[-2]
                     self.error_p = self.error
                     self.error_i += self.error * delta_t
@@ -321,6 +335,7 @@ class FiberShootingLogic(Base, EmptyInterface):
                 else:
                     self.set_duty_cycle(self.duty_cycle)
         self.sigPowerDataNext.emit()
+        time.sleep(0.01)    # Introduce idle time to decrease slightly CPU load
         return
 
     # Power Meter

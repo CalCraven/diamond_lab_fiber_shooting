@@ -31,7 +31,7 @@ class Thorlabs_Powermeter(Base, EmptyInterface):
 
         self.connected = False
         # Account for the beamsplitter ratio:
-        self.beam_splitter_coef = 26.26/93.0
+        self.beam_splitter_coef = 26.26/93.0 * 264/300 * 0.3 # BS * setup transmission
 
         # List all connected powermeters
         self.power_meter = TLPM()
@@ -62,8 +62,8 @@ class Thorlabs_Powermeter(Base, EmptyInterface):
             print("Calibration info:", message.value.decode("utf-8"))
             # Setting up parameters
             result = self.power_meter.setWavelength(ViReal64(10600))  # in nm
-            result += self.power_meter.setPowerAutoRange(0)  # 0 = disable, 1 = enable
-            result += self.power_meter.setPowerRange(ViReal64(3.2))  # max power in W
+            result += self.power_meter.setPowerAutoRange(1)  # 0 = disable, 1 = enable
+            #result += self.power_meter.setPowerRange(ViReal64(3.2))  # max power in W
             result += self.power_meter.setPowerUnit(0)  # 0 = W, 1 = dBm
             if result != 0:
                 print("Warning! Could not set wavelength and/or power range")

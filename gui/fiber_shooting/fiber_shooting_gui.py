@@ -6,12 +6,15 @@ from core.module import Connector
 from gui.guibase import GUIBase
 from gui.colordefs import QudiPalettePale as Palette
 from qtpy import QtWidgets
+from qtpy import QtCore
 from qtpy import uic
 import pyqtgraph as pg
 
 
 class MainWindow(QtWidgets.QMainWindow):
     """ Create the Main Window based on the corresponding *.ui file. """
+
+    sigKeyPressed = QtCore.Signal(QtCore.QEvent)
 
     def __init__(self):
         # Get the path to the *.ui file
@@ -24,6 +27,10 @@ class MainWindow(QtWidgets.QMainWindow):
         uic.loadUi(ui_file, self)
         self.show()
         self.move(280, 0)
+
+    # Override the built-in event handler from QtWidgets class
+    def keyPressEvent(self, event):
+        self.sigKeyPressed.emit(event)
 
 
 class FiberShootingGui(GUIBase):
@@ -69,6 +76,9 @@ class FiberShootingGui(GUIBase):
 
         self.acquisition_time = 60
         self.time_start = 0
+
+        # Define who will process sigKeyPressed events
+        self._mw.sigKeyPressed.connect(self.on_keypress)
 
         # Adjust GUI Parameters
         self._mw.cross_radioButton.setChecked(self._fiber_shooting_logic.is_cross())
@@ -121,6 +131,7 @@ class FiberShootingGui(GUIBase):
         self._mw.zoom_comboBox.currentTextChanged.connect(self.set_zoom_factor)
         self._mw.edge_min_spinBox.valueChanged.connect(self.set_edge_min)
         self._mw.edge_max_spinBox.valueChanged.connect(self.set_edge_max)
+        self._mw.screenshot_pushButton.clicked.connect(self.make_screenshot)
         # Flipper's connectors
         self._mw.flipper_open_checkBox.clicked.connect(self.open_flipper)
         # Shutter's connectors
@@ -144,6 +155,18 @@ class FiberShootingGui(GUIBase):
         """ Reverse steps of activation """
         self._mw.close()
         return
+
+    # Key press events
+
+    def on_keypress(self, event):
+        """ Handles the passed keyboard events from the main window. """
+        modifiers = QtWidgets.QApplication.keyboardModifiers()  # Check modifier keys
+
+        if modifiers == QtCore.Qt.ControlModifier:
+            if event.key() == QtCore.Qt.Key_U:  # Ctrl+U
+                print('Increasing exposure to', self._fiber_shooting_logic.exposure_up())
+            elif event.key() == QtCore.Qt.Key_D:  # Ctrl+D
+                print('Decreasing exposure to', self._fiber_shooting_logic.exposure_down())
 
     # Camera's methods
 
@@ -212,6 +235,10 @@ class FiberShootingGui(GUIBase):
             self._fiber_shooting_logic.set_edge_detection(0)
         return
 
+    def make_screenshot(self):
+        """Take a screenshot and save it in a file"""
+        return self._fiber_shooting_logic.make_screenshot()
+
     #  Flipper's methods
 
     def open_flipper(self):
@@ -229,6 +256,7 @@ class FiberShootingGui(GUIBase):
     def send_pulse(self):
         """Open the shutter for a duration specified on the GUI"""
         self._fiber_shooting_logic.send_pulse(self._mw.shutter_time_spinBox.value())
+        print(time.time(), "Shutter pulsed.")
         return
 
     # Laser's methods
@@ -270,22 +298,17 @@ class FiberShootingGui(GUIBase):
         self.setpoint = self._mw.setpoint_spinBox.value() * 1e-3
         self._fiber_shooting_logic.set_setpoint(self.setpoint)
         self.curve[1].setValue(self.setpoint)
-        if self._fiber_shooting_logic.is_pid_status():
-            self._fiber_shooting_logic.set_ramp_status(True)
-            self._fiber_shooting_logic.set_pid_status(False)
-        else:
-            pass
         return
 
     def set_pid_status(self):
         """Set the PID power lock ON/OFF"""
         if self._mw.PID_ON_checkBox.isChecked():
-            self._fiber_shooting_logic.set_ramp_status(True)
-            self._fiber_shooting_logic.set_pid_status(False)
+            self._fiber_shooting_logic.set_pid_status(True)
+            self._mw.duty_cycle_doubleSpinBox.setEnabled(False)
             self._mw.duty_cycle_doubleSpinBox.setReadOnly(True)
         else:
-            self._fiber_shooting_logic.set_ramp_status(False)
             self._fiber_shooting_logic.set_pid_status(False)
+            self._mw.duty_cycle_doubleSpinBox.setEnabled(True)
             self._mw.duty_cycle_doubleSpinBox.setReadOnly(False)
         return
 
