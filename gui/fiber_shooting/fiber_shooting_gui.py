@@ -272,7 +272,7 @@ class FiberShootingGui(GUIBase):
         if self._mw.laser_ON_checkBox.isChecked():
             self.time_start = time.time()
             self._fiber_shooting_logic.set_duty_cycle(self._mw.duty_cycle_doubleSpinBox.value())
-            self._fiber_shooting_logic.set_laser_status(True) # Start reading data from PowerMeter
+            self._fiber_shooting_logic.set_laser_status(True)  # Start reading data from PowerMeter
             self.power_data = []
             self.time_data = []
             self._fiber_shooting_logic.set_power()

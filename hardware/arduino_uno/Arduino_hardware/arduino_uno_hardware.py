@@ -18,12 +18,12 @@ class ArduinoHardware(Base, EmptyInterface):
         self.port = 'COM3'
         self.baud_rate=115200
         self.timeout = 0.2
-        self.F_CPU = 16e6
-        self.TOP = 3199
-        self.CM = 0
+        self.F_CPU = 16e6  # Arduino UNO CPU frequency (is used to derive the PWM frequency)
+        self.TOP = 3199    # (TOP + 1) is the number of clock cycles in one PWM period
+        self.CM = 0        # (CM + 1) is the number of clock cycles for PWM high time (defines the duty cycle)
         # try:
         self.connect_arduino()
-        self.set_freq(5000)
+        self.set_freq(5000)  # Default PWM frequency
         self.set_duty_cycle(.01)
         # except:
         #     print("arduino not properly connected. Check the COM port number")
@@ -33,7 +33,7 @@ class ArduinoHardware(Base, EmptyInterface):
 
     def on_deactivate(self):
         """
-        Deinitialisation performed during deactivation of the module.
+        De-initialisation performed during deactivation of the module.
         """
         self.disconnect_arduino()
         return
@@ -56,12 +56,12 @@ class ArduinoHardware(Base, EmptyInterface):
 
 
     def set_freq(self, freq):
-        top = int(round(self.F_CPU / float(freq) - 1))
+        top = int(round(self.F_CPU / float(freq) - 1))  # because PWM_freq = F_CPU / (top + 1)
         self.set_TOP(top)
         # print 'setting TOP = {0:d} (f = {1:.2f} kHz)'.format(top, F_CPU / (TOP + 1) / 1000.)
 
     def set_duty_cycle(self, duty):
-        cm = int(round(duty * (self.TOP + 1) - 1))
+        cm = int(round(duty * (self.TOP + 1) - 1))  # because duty = (CM + 1)/(TOP + 1)
         self.set_CM(cm)
         # print 'setting CM = {0:d} (duty = {1:.2f}%)'.format(cm, 100. * (CM + 1) / (TOP + 1))
 
@@ -69,10 +69,11 @@ class ArduinoHardware(Base, EmptyInterface):
         self.arduino.write(('s{0:d}{1:d};'.format(shutter, duration)).encode())
 
     def open_shutter_micro(self, shutter, duration):
-        self.arduino.write(('S{0:d},{1:d};'.format(shutter, duration)).encode())
+        self.arduino.write(('S{0:d}{1:d};'.format(shutter, duration)).encode())
 
     def toggle_shutter(self, shutter):
-        self.arduino.write('t{0:d}9;'.format(shutter).encode())  # extra integer needed for
+        # An arbitrary integer (9) added to avoid Serial.parseInt() timeout (see Arduino_communication.ino):
+        self.arduino.write('t{0:d}9;'.format(shutter).encode())
 
     def change_duty(self, duty):
         self.duty = duty

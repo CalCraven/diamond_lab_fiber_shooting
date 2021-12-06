@@ -11,7 +11,7 @@ void parameter_update() {
       Serial.read();
     
     switch (command[0]) {
-      case 'f':  // set TOP (frequency)
+      case 'f':  // set TOP (PWM frequency)
         setTOP(val);
         break;
       

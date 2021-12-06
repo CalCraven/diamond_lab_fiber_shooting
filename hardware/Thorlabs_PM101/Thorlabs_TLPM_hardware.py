@@ -31,7 +31,7 @@ class Thorlabs_Powermeter(Base, EmptyInterface):
 
         self.connected = False
         # Account for the beamsplitter ratio:
-        self.beam_splitter_coef = 26.26/93.0 * 264/300 * 0.3 # BS * setup transmission
+        self.beam_splitter_coef = 1 # BS * setup transmission
 
         # List all connected powermeters
         self.power_meter = TLPM()
